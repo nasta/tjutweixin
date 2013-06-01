@@ -18,9 +18,9 @@ for plugin_name in plugins.__all__:
     plugin_modules.append(getattr(plugins, plugin_name))
 
 def help_info():
-    msg = ''
+    msg = u'帮助信息\n'
     for plugin_module in plugin_modules:
-        msg += u'%s %s\n' % (plugin_module.command, plugin_module.help_info)
+        msg += u'回复%s, %s\n' % (plugin_module.command, plugin_module.help_info)
     return msg
 
 def detail_info(name):
@@ -31,6 +31,9 @@ def detail_info(name):
 
 
 def magic(data):
+    logging.error(data)
+    if data['Content'] == u'帮助' or data['Content'] == u'help':
+        return help_info()
     for plugin_module in plugin_modules:
         try:
             if plugin_module.test(data):
@@ -38,7 +41,7 @@ def magic(data):
         except Exception, e:
             exstr = traceback.format_exc()
             logging.error(exstr)
-    return u'呵呵'
+    return u'指令无法解析，回复help获取帮助'
 
 if __name__ == '__main__':
     print help_info()
